@@ -1,0 +1,30 @@
+services:
+ app:
+    container_name: nest-mongo-server
+    env_file:
+      - .env.local
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app
+
+ mongo:
+    image: mongo:latest
+    container_name: nest-mongo-db
+    env_file:
+      - .env.local
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./src/common/persistence/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./db-volume:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: testadmin
+      MONGO_INITDB_ROOT_PASSWORD: p4ssw0rd
