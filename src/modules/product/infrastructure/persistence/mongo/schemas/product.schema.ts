@@ -1,4 +1,4 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { randomUUID } from "crypto";
 
 @Schema()
@@ -6,12 +6,14 @@ export class Product {
     @Prop({ type: String, default: () => randomUUID() })
     _id: string;
 
-    @Prop({ required: true })
+    @Prop({ type: String, required: true })
     name: string;
 
-    @Prop({ required: true })
+    @Prop({ type: String, required: true })
     description: string;
 
-    @Prop([String])
+    @Prop({ type: [String] })
     tags: string[];
 }
+
+export const ProductSchema = SchemaFactory.createForClass(Product);
