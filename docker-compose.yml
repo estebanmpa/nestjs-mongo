@@ -23,7 +23,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ./src/common/persistence/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./src/common/infrastructure/persistence/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       - ./db-volume:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: testadmin
