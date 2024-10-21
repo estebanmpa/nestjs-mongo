@@ -3,10 +3,10 @@ import { Product } from "../../infrastructure/persistence/mongo/schemas/product.
 import { ProductRepositoryImpl } from "../repositories/product.repository.impl";
 
 @Injectable()
-export class FindProductUseCase {
+export class FindProductByIdUseCase {
     constructor(private readonly repository: ProductRepositoryImpl) { }
 
-    handle = async (page: number, pageSize: number): Promise<Product[]> => {
-        return await this.repository.find(page, pageSize);
+    handle = async (id: string): Promise<Product> => {
+        return await this.repository.findById(id);
     }
 }

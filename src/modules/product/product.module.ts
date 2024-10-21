@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ProductController } from "./infrastructure/controllers/product.controller";
-import { CreateProductUseCase, FindProductUseCase, UpdateProductUseCase } from "./application/use-cases";
+import { CreateProductUseCase, DeleteProductUseCase, FindProductByIdUseCase, FindProductUseCase, UpdateProductUseCase } from "./application/use-cases";
 import { ProductRepositoryImpl } from "./application/repositories/product.repository.impl";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Product, ProductSchema } from "./infrastructure/persistence/mongo/schemas/product.schema";
@@ -15,6 +15,8 @@ import { Product, ProductSchema } from "./infrastructure/persistence/mongo/schem
         CreateProductUseCase,
         UpdateProductUseCase,
         FindProductUseCase,
+        FindProductByIdUseCase,
+        DeleteProductUseCase,
         ProductRepositoryImpl
     ]
 })

@@ -10,12 +10,21 @@ import { Model } from "mongoose";
 export class ProductRepositoryImpl implements ProductRepository {
     constructor(@InjectModel(Product.name) private readonly productSchema: Model<Product>) { }
 
-    find = async (filters: any[]): Promise<Product[]> => {
-        return await this.productSchema.find().exec();
+    find = async (page: number, pageSize: number): Promise<Product[]> => {
+        const products = await this.productSchema.aggregate([
+            {
+                $facet: {
+                    metadata: [{ $count: 'totalCount' }],
+                    data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+                },
+            },
+        ]);
+
+        return products[0].data;
     }
 
     findById = async (id: string): Promise<Product> => {
-        return await this.productSchema.findById(id);
+        return await this.productSchema.findById(id).exec();
     }
 
     create = async (dto: CreateProductDto): Promise<Product> => {

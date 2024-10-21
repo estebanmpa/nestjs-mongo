@@ -1,32 +1,36 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { Product } from "../persistence/mongo/schemas/product.schema";
 import { CreateProductDto } from "../../domain/dtos/create-product.dto";
 import { UpdateProductDto } from "../../domain/dtos/update-product.dto";
 import { BaseController } from "src/common/infrastructure/interfaces/base-controller";
-import { CreateProductUseCase, FindProductUseCase, UpdateProductUseCase } from "../../application/use-cases";
+import { CreateProductUseCase, DeleteProductUseCase, FindProductUseCase, UpdateProductUseCase } from "../../application/use-cases";
 import { IdParam } from "src/common/domain/dtos/id-param.dto";
+import { PaginatedParam } from "src/common/domain/dtos/paginated-param.dto";
+import { FindProductByIdUseCase } from "../../application/use-cases/find-product-by-id.use-case";
+import { PaginatedResultsDTO } from "src/common/domain/dtos/paginated-results.dto";
 
 @Controller("product")
 export class ProductController implements BaseController<Product, CreateProductDto, UpdateProductDto> {
     constructor(private readonly createProduct: CreateProductUseCase,
         private readonly updateProduct: UpdateProductUseCase,
-        private readonly findProduct: FindProductUseCase) { }
+        private readonly findProduct: FindProductUseCase,
+        private readonly deleteProduct: DeleteProductUseCase,
+        private readonly findProductById: FindProductByIdUseCase) { }
 
     @Get()
-    async retrieve(): Promise<Product[]> {
-        return await this.findProduct.handle();
+    async retrieve(@Query() { page, pageSize }: PaginatedParam): Promise<PaginatedResultsDTO<Product>> {
+        const results = new PaginatedResultsDTO<Product>(page, pageSize, await this.findProduct.handle(page, pageSize));
+        return results;
     }
 
     @Get(":id")
-    async retrieveById(@Param() params: IdParam): Promise<Product> {
-        const { id } = params;
-        console.log(id)
-        return 
+    async retrieveById(@Param() { id }: IdParam): Promise<Product> {
+        return this.findProductById.handle(id);
     }
 
     @Put(":id")
-    async update(@Param() params: IdParam, @Body() product: UpdateProductDto): Promise<Product> {
-        const { id } = params;
+    async update(@Param() { id }: IdParam, @Body() product: UpdateProductDto): Promise<Product> {
+        console.log(id)
         return await this.updateProduct.handle(id, product);
     }
 
@@ -42,6 +46,6 @@ export class ProductController implements BaseController<Product, CreateProductD
 
     @Delete(":id")
     async delete(@Param() { id }: IdParam): Promise<void> {
-        return
+        return this.deleteProduct.handle(id);
     }
 }
