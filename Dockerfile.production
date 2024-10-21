@@ -4,5 +4,5 @@ COPY package.json yarn.lock ./
 RUN yarn install
 COPY . .
 RUN yarn run build
-ENV NODE_ENV local
-CMD [ "yarn", "run", "start:dev" ]
+ENV NODE_ENV production
+CMD [ "yarn", "run", "start:prod" ]

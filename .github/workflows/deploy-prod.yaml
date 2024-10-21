@@ -1,0 +1,43 @@
+name: Deploy to server
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up SSH key
+      # check this thread to understand why its needed:
+      # https://stackoverflow.com/a/70447517
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+        sudo apt-get install sshpass
+
+    - name: Build
+      run: |
+          sshpass -p '${{ secrets.SSH_PASSWORD }}' ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<'ENDSSH'
+          cd ${{ secrets.APP_PATH }}
+          sudo su
+          git checkout develop
+          git reset --hard origin/develop
+          cp ${{ secrets.APP_ENVIRONMENT }} .
+          docker container stop ${{ secrets.APP_NAME }} || true
+          docker container rm ${{ secrets.APP_NAME }} || true
+          docker build --file ./Dockerfile.production --tag=${{ secrets.APP_NAME }} .
+          docker image list
+          ENDSSH
+
+    - name: Run
+      run: |
+          sshpass -p '${{ secrets.SSH_PASSWORD }}' ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<'ENDSSH'
+          cd ${{ secrets.APP_PATH }}
+          sudo su
+          docker run -d --restart unless-stopped -p 3001:3001 --name ${{ secrets.APP_NAME }} ${{ secrets.APP_NAME }}
+          docker container list
+          ENDSSH
