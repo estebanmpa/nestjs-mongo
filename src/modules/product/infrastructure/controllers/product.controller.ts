@@ -8,6 +8,7 @@ import { IdParam } from "src/common/domain/dtos/id-param.dto";
 import { PaginatedParam } from "src/common/domain/dtos/paginated-param.dto";
 import { FindProductByIdUseCase } from "../../application/use-cases/find-product-by-id.use-case";
 import { PaginatedResultsDTO } from "src/common/domain/dtos/paginated-results.dto";
+import { FindOptions } from "src/common/domain/types/find-options.type";
 
 @Controller("product")
 export class ProductController implements BaseController<Product, CreateProductDto, UpdateProductDto> {
@@ -19,7 +20,8 @@ export class ProductController implements BaseController<Product, CreateProductD
 
     @Get()
     async retrieve(@Query() { page, pageSize }: PaginatedParam): Promise<PaginatedResultsDTO<Product>> {
-        const results = new PaginatedResultsDTO<Product>(page, pageSize, await this.findProduct.handle(page, pageSize));
+        const options: FindOptions = { page, pageSize };
+        const results = new PaginatedResultsDTO<Product>(page, pageSize, await this.findProduct.handle(options));
         return results;
     }
 
