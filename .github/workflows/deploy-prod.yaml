@@ -2,7 +2,7 @@ name: Deploy to server
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   deploy:
@@ -24,8 +24,8 @@ jobs:
           sshpass -p '${{ secrets.SSH_PASSWORD }}' ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<'ENDSSH'
           cd ${{ secrets.APP_PATH }}
           sudo su
-          git checkout develop
-          git reset --hard origin/develop
+          git checkout main
+          git reset --hard origin/main
           cp ${{ secrets.APP_ENVIRONMENT }} .
           docker container stop ${{ secrets.APP_NAME }} || true
           docker container rm ${{ secrets.APP_NAME }} || true
