@@ -20,7 +20,7 @@ Example development of a REST api using NestJS framework with the next features:
 5. Docker support.
 6. Pagination for better response times.
 7. Unit Tests. **pending**
-8. Github Actions. **pending**
+8. Github Actions.
 
 ### Getting Started
 
@@ -29,11 +29,7 @@ Example development of a REST api using NestJS framework with the next features:
 2. Create **.env.local** environment variables file for local run:
 ```
 LISTEN_PORT=3001
-MONGO_USER=mongouser
-MONGO_PASSWORD=p4ssw0rd
-MONGO_HOST=mongo
-MONGO_PORT=27017
-MONGO_DB=nestmongodb
+MONGO_CONNECTION_STRING=mongodb://mongouser:p4ssw0rd@mongo:27017/nestmongodb
 ```
 
 #### Local Run
