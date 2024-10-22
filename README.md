@@ -7,6 +7,7 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Local Run](#local-run)
+- [Docker Hub Images](#dockerhubimages)
 - [Endpoints](#endpoints)
   - [Prerequisites](#prerequisites)
 - [Nice to Have](#nice-to-have)
@@ -20,7 +21,8 @@ Example development of a REST api using NestJS framework with the next features:
 5. Docker support.
 6. Pagination for better response times.
 7. Unit Tests. **pending**
-8. Github Actions.
+8. Github Actions to deploy to a cloud server.
+9. Github Actions to build and push docker image to dockerhub for scalability.
 
 ### Getting Started
 
@@ -37,6 +39,9 @@ This proyect has docker compose support to run in local. Run this command to lau
 ```
 docker compose up --build
 ```
+
+### Docker Hub Images
+https://hub.docker.com/r/estebanmpa/nestjs-mongodb-api
 
 ### Endpoints
 #### GET
