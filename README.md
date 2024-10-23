@@ -32,6 +32,7 @@ Example development of a REST api using NestJS framework with the next features:
 ```
 LISTEN_PORT=3001
 MONGO_CONNECTION_STRING=mongodb://mongouser:p4ssw0rd@mongo:27017/nestmongodb
+MONGO_BATCH_SIZE=100
 ```
 
 #### Local Run
