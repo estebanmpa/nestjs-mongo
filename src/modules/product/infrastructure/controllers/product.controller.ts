@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { Product } from "../persistence/mongo/schemas/product.schema";
-import { CreateProductDto } from "../../domain/dtos/create-product.dto";
 import { UpdateProductDto } from "../../domain/dtos/update-product.dto";
 import { BaseController } from "src/common/infrastructure/interfaces/base-controller";
 import { CreateProductUseCase, DeleteProductUseCase, FindProductUseCase, UpdateProductUseCase } from "../../application/use-cases";
@@ -9,9 +8,10 @@ import { PaginatedParam } from "src/common/domain/dtos/paginated-param.dto";
 import { FindProductByIdUseCase } from "../../application/use-cases/find-product-by-id.use-case";
 import { PaginatedResultsDTO } from "src/common/domain/dtos/paginated-results.dto";
 import { FindOptions } from "src/common/domain/types/find-options.type";
+import { CreateProductsDto } from "../../domain/dtos/create-products.dto";
 
 @Controller("product")
-export class ProductController implements BaseController<Product, CreateProductDto, UpdateProductDto> {
+export class ProductController implements BaseController<Product, CreateProductsDto, UpdateProductDto> {
     constructor(private readonly createProduct: CreateProductUseCase,
         private readonly updateProduct: UpdateProductUseCase,
         private readonly findProduct: FindProductUseCase,
@@ -42,8 +42,9 @@ export class ProductController implements BaseController<Product, CreateProductD
     }
 
     @Post()
-    async create(@Body() product: CreateProductDto): Promise<Product> {
-        return await this.createProduct.handle(product);
+    async create(@Body() body: CreateProductsDto): Promise<void> {
+        const { products } = body;
+        return await this.createProduct.handle(products);
     }
 
     @Delete(":id")
