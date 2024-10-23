@@ -5,10 +5,13 @@ import { ProductRepository } from "../../domain/repositories/product.repository"
 import { Product } from "../../infrastructure/persistence/mongo/schemas/product.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { ConfigService } from "@nestjs/config";
+import { ConfigurationEnum } from "src/common/configuration/configuration.enum";
 
 @Injectable()
 export class ProductRepositoryImpl implements ProductRepository {
-    constructor(@InjectModel(Product.name) private readonly productSchema: Model<Product>) { }
+    constructor(@InjectModel(Product.name) private readonly productSchema: Model<Product>,
+        private readonly configService: ConfigService) { }
 
     find = async (page: number, pageSize: number): Promise<Product[]> => {
         const products = await this.productSchema.aggregate([
@@ -27,9 +30,17 @@ export class ProductRepositoryImpl implements ProductRepository {
         return await this.productSchema.findById(id).exec();
     }
 
-    create = async (dto: CreateProductDto): Promise<Product> => {
-        const newProduct = new this.productSchema(dto);
-        return await newProduct.save();
+    create = async (dto: CreateProductDto[]): Promise<void> => {
+        const batchSize: number = this.configService.get<number>(ConfigurationEnum.DATABASE_BATCH_SIZE);
+        const batchLoops: number = Math.ceil(dto.length / batchSize);
+        console.log("batchSize =", batchSize)
+        for (let step = 0; step < batchLoops; step++) {
+            console.log("step =", step)
+            console.log("step * batchSize =", step * batchSize)
+            console.log("(step * batchSize) + batchSize =", (step * batchSize) + batchSize - 1)
+            const batchInserts: CreateProductDto[] = dto.slice(step * batchSize, (step * batchSize) + batchSize);
+            await this.productSchema.insertMany(batchInserts);
+        }
     }
 
     update = async (id: string, dto: UpdateProductDto): Promise<Product> => {

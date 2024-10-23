@@ -1,10 +1,6 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateProductDto {
-    @IsUUID("4")
-    @IsOptional()
-    _id: string;
-
     @IsString()
     @IsNotEmpty()
     name: string;

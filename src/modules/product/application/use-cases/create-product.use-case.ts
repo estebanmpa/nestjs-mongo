@@ -8,7 +8,7 @@ import { ProductRepositoryImpl } from "../repositories/product.repository.impl";
 export class CreateProductUseCase implements BaseUseCase<Product, CreateProductDto> {
     constructor(private readonly repository: ProductRepositoryImpl) { }
 
-    handle = async (dto: CreateProductDto): Promise<Product> => {
+    handle = async (dto: CreateProductDto[]): Promise<void> => {
         return await this.repository.create(dto);
     }
 }

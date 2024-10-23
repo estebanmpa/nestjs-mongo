@@ -5,7 +5,7 @@ import { PaginatedResultsDTO } from "src/common/domain/dtos/paginated-results.dt
 export abstract class BaseController<T, Create, Update> {
     abstract retrieve(params: PaginatedParam): Promise<PaginatedResultsDTO<T>>;
     abstract retrieveById(id: IdParam): Promise<T>;
-    abstract create(product: Create): Promise<T>;
+    abstract create(product: Create): Promise<void>;
     abstract update(id: IdParam, product: Update): Promise<T>;
     abstract patch(id: IdParam, product: Update): Promise<T>;
     abstract delete(id: IdParam): Promise<void>;
