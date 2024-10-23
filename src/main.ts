@@ -11,7 +11,7 @@ async function bootstrap() {
   const port = configService.get(ConfigurationEnum.LISTEN_PORT) ?? 3000;
   app.setGlobalPrefix("/api")
   app.useGlobalPipes(ClassValidatorPipe)
-  app.useBodyParser('json', { limit: '10mb' });
+  app.useBodyParser('json', { limit: '20mb' });
   await app.listen(port);
 }
 bootstrap();
