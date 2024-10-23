@@ -33,13 +33,10 @@ export class ProductRepositoryImpl implements ProductRepository {
     create = async (dto: CreateProductDto[]): Promise<void> => {
         const batchSize: number = this.configService.get<number>(ConfigurationEnum.DATABASE_BATCH_SIZE);
         const batchLoops: number = Math.ceil(dto.length / batchSize);
-        console.log("batchSize =", batchSize)
+
         for (let step = 0; step < batchLoops; step++) {
-            console.log("step =", step)
-            console.log("step * batchSize =", step * batchSize)
-            console.log("(step * batchSize) + batchSize =", (step * batchSize) + batchSize - 1)
             const batchInserts: CreateProductDto[] = dto.slice(step * batchSize, (step * batchSize) + batchSize);
-            await this.productSchema.insertMany(batchInserts);
+            this.productSchema.insertMany(batchInserts);
         }
     }
 
