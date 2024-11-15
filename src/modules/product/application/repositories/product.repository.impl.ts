@@ -36,7 +36,11 @@ export class ProductRepositoryImpl implements ProductRepository {
 
         for (let step = 0; step < batchLoops; step++) {
             const batchInserts: CreateProductDto[] = dto.slice(step * batchSize, (step * batchSize) + batchSize);
-            this.productSchema.insertMany(batchInserts);
+
+            // Keeping not awaited to avoid blocking thread
+            this.productSchema.insertMany(batchInserts).catch(error => { 
+                // TODO: Log error using sentry for example
+            });
         }
     }
 
